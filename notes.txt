@@ -1,0 +1,12 @@
+
+Good resources:
+
+* https://macarthur.me/posts/building-a-lambda-function-with-netlify
+	--> Using ENV variables.
+	--> Using .env
+	--> Using webpack DefinePlugin
+
+* https://travishorn.com/netlify-lambda-functions-from-scratch-1186f61c659e
+
+* https://objectivefs.com/howto/how-to-restrict-s3-bucket-policy-to-only-one-aws-s3-bucket
+	--> Setting up S3 policy.
