@@ -4,10 +4,8 @@
 	"license": "ISC",
 	"scripts": {
 		"build:prod": "npm run build:functions && npm run build:app",
-
 		"build:app": "webpack --mode production",
 		"watch:app": "webpack --mode development --watch",
-
 		"build:functions": "netlify-lambda build src/lambda",
 		"serve:functions": "netlify-lambda serve src/lambda"
 	},

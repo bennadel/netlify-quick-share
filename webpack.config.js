@@ -1,10 +1,20 @@
 
+// Using the dotenv package allows us to have local-versions of our ENV variables in a
+// .env file while still using different build-time ENV variables in production.
+require( "dotenv" ).config();
+
+// ----------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
+
 // Load the core node modules.
 var AngularCompilerPlugin = require( "@ngtools/webpack" ).AngularCompilerPlugin;
 var CleanWebpackPlugin = require( "clean-webpack-plugin" );
 var HtmlWebpackPlugin = require( "html-webpack-plugin" );
 var path = require( "path" );
 var webpack = require( "webpack" );
+
+// ----------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
 
 // We are exporting a Function instead of a configuration object so that we can
 // dynamically define the configuration object based on the execution mode.
@@ -90,6 +100,15 @@ module.exports = ( env, argv ) => {
 			]
 		},
 		plugins: [
+			// I provide build-time values as global constants in the runtime so that
+			// they can be consumed by the Angular application.
+			// --
+			// NOTE: This plug-in does a direct-text replacement in the source code. As
+			// such, all string values must be explicitly quoted / stringified.
+			new webpack.DefinePlugin({
+				"process.env.NETLIFY_FUNCTIONS_ROOT": JSON.stringify( process.env.NETLIFY_FUNCTIONS_ROOT )
+			}),
+
 			// I clean the build directory before each build.
 			new CleanWebpackPlugin(),
 
