@@ -1,5 +1,6 @@
 
 // Import the core angular services.
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
 // Import the application components and services.
@@ -20,11 +21,16 @@ export interface UploadResponse {
 })
 export class UploadService {
 
+	private httpClient: HttpClient;
 	private signedUrlService: SignedUrlService;
 
 	// I initialize the upload service.
-	constructor( signedUrlService: SignedUrlService ) {
+	constructor(
+		httpClient: HttpClient,
+		signedUrlService: SignedUrlService
+		) {
 
+		this.httpClient = httpClient;
 		this.signedUrlService = signedUrlService;
 
 	}
@@ -41,7 +47,18 @@ export class UploadService {
 		var putUrl = urls.putUrl;
 		var getUrl = urls.getUrl;
 
-		await this.sendFile( file, putUrl );
+		await this.httpClient
+			.put<void>(
+				putUrl,
+				file,
+				{
+					headers: {
+						"Content-Type": file.type
+					}
+				}
+			)
+			.toPromise()
+		;
 
 		return({
 			name: file.name,
@@ -49,47 +66,6 @@ export class UploadService {
 			type: file.type,
 			url: getUrl
 		});
-
-	}
-
-	// ---
-	// PRIVATE METHODS.
-	// ---
-
-	// I send the given File to the given URL. Returns a promise.
-	private sendFile(
-		file: File,
-		url: string
-		) : Promise<void> {
-
-		// CAUTION: For the purposes of this demo, I am using a simple upload algorithm.
-		var promise = new Promise<void>(
-			( resolve, reject ) => {
-
-				var xhr = new XMLHttpRequest();
-
-				xhr.upload.onload = ( event: ProgressEvent ) => {
-
-					resolve();
-
-				};
-
-				xhr.upload.onerror = ( event: ProgressEvent ) => {
-
-					reject();
-
-				};
-				xhr.upload.onabort = xhr.upload.onerror;
-				xhr.upload.ontimeout = xhr.upload.onerror;
-
-				xhr.open( "PUT", url );
-				xhr.setRequestHeader( "Content-Type", file.type );
-				xhr.send( file );
-
-			}
-		);
-
-		return( promise );
 
 	}
 
